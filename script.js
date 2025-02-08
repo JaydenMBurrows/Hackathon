@@ -1,3 +1,4 @@
+import EnemyNote from "./EnemyNote.js";
 const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
 const CANVAS_WIDTH = canvas.width = 800;
@@ -66,18 +67,17 @@ window.addEventListener('load', function() {
         }
 
         draw(ctx) {
-            ctx.drawImage(this.image, this.frameX, this.frameY, this.spriteWidth, this.spriteHeight, 0, 0, this.width, this.height);
+            ctx.drawImage(this.image, this.frameX, this.frameY, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
         }
         
         update() {
-            this.x += 10;
-            // this.x = gameFrame * gameSpeed * this.speed % this.width;
+            this.x = this.speed;        
         }
     }
 
     let playerState = 'run';
 
-    const player = new Player(0, 0, 5);
+    const player = new Player(120, 325, 1);
 
     function animate() {
         ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
