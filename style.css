@@ -25,8 +25,8 @@ body {
 
 
 #canvas1 {
-    margin: 10px;
-    border: 3px solid rgb(185, 31, 196);
-    width: 600px; /* placeholder value for now */
+    margin: 20px;
+    border: 3px solid black;
+    width: 1350px; /* placeholder value for now */
     height: 650px; /* placeholder value for now */
 }
