@@ -10,7 +10,8 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
 }
-.button{
+
+.button {
     border: none;
     color: rgb(224, 32, 224);
     padding: 15px 32px;
