@@ -1,18 +1,11 @@
 import EnemyNote from "./EnemyNote.js";
-import InputHandler from "./InputHandler.js";
 const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
 const CANVAS_WIDTH = canvas.width = 1350;
 const CANVAS_HEIGHT = canvas.height = 650;
 let gameSpeed = 15;
 let gameFrame = 0;
-
-const backgroundLayer1 = new Image();
-backgroundLayer1.src = 'sky.png';
-const backgroundLayer2 = new Image();
-backgroundLayer2.src = 'background.png';
-const backgroundLayer3 = new Image();
-backgroundLayer3.src = 'foreground.png';
+let animationId;
 
 const staggerFrames = 10;
 let staggerNotes = 200;
@@ -35,13 +28,13 @@ class Game {
         this.width = width;
         this.height = height;
         this.player = new Player(10, 350, 1);
-        this.input = new InputHandler();
+        this.input = new InputHandler(enemyNotes, enemyNoteLetters);
     }
 
     update() {
         this.player.update();
         if (gameFrame % staggerNotes === 0) {
-            let y = Math.random() * 600;
+            let y = Math.random() * 500;
             let letter = getRandomLetter();
             enemyNotes.push(new EnemyNote(ctx, speed, y, letter));
             enemyNoteLetters.push(letter);
@@ -95,14 +88,45 @@ class Player {
         }
     } // Player
 
+    class InputHandler {
+        constructor() {
+            this.keys = [];
+            document.addEventListener('keydown', e => {
+                if (this.isAlphabet(e.key)) {
+                    this.keys.push(e.key);
+                }
+            });
+
+            document.addEventListener('keyup', e => {
+                if (this.isAlphabet(e.key) && this.keys.indexOf(e.key) != -1) {
+                    this.keys.splice(this.keys.indexOf(e.key), 1);
+                    if (enemyNoteLetters.indexOf(e.key) != -1) {
+                        enemyNoteLetters.splice(enemyNoteLetters.indexOf(e.key), 1);
+                        enemyNotes.splice(enemyNotes.indexOf(e.key), 1);
+                    }   
+                }
+            });
+        }
+    
+        isAlphabet(char) {
+            var alphabet = "abcdefghijklmnopqrstuvwxyz";
+            for (let i = 0; i < alphabet.length; i++) {
+                if (char === alphabet.charAt(i)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    } // inputHandler
+
     const game = new Game(CANVAS_WIDTH, CANVAS_HEIGHT);
 
     function animate() {
         ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         game.update();
         game.draw(ctx);
-        requestAnimationFrame(animate);  
+        animationId = requestAnimationFrame(animate);  
     }
-    
+
     animate();
     });

@@ -1,7 +1,7 @@
 /** @type {HTMLCanvasElement} */
 export default class EnemyNote {
     constructor(ctx, speed, y, letter) {
-        this.x = 810;
+        this.x = 1360;
         this.y = y;
         this.width = 80;
         this.height = 150;
