@@ -1,4 +1,5 @@
 import EnemyNote from "./EnemyNote.js";
+import InputHandler from "./InputHandler.js";
 const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
 const CANVAS_WIDTH = canvas.width = 1350;
@@ -18,10 +19,50 @@ let staggerNotes = 200;
 
 
 window.addEventListener('load', function() {
-    
+
+let speed = 1; // should increase as game goes on
+let enemyNotes = [];
+let enemyNoteLetters = []; // keeps track of the letters of each corresponding note
+
+function getRandomLetter() {
+    const alphabet = "abcdefghijklmnopqrstuvwxyz";
+    const randomIndex = Math.floor(Math.random() * alphabet.length);
+    return alphabet[randomIndex];
+}
+
+class Game {
+    constructor(width, height) {
+        this.width = width;
+        this.height = height;
+        this.player = new Player(10, 350, 1);
+        this.input = new InputHandler();
+    }
+
+    update() {
+        this.player.update();
+        if (gameFrame % staggerNotes === 0) {
+            let y = Math.random() * 600;
+            let letter = getRandomLetter();
+            enemyNotes.push(new EnemyNote(ctx, speed, y, letter));
+            enemyNoteLetters.push(letter);
+        }
+        enemyNotes.forEach(enemyNote => {
+            enemyNote.update(); 
+        });
+        gameFrame++;
+    }
+
+    draw(ctx) {
+        this.player.draw(ctx);
+        enemyNotes.forEach(enemyNote => {
+            enemyNote.draw(ctx);
+        });
+    }
+}    
+
 class Player {
     constructor(x, y, speed) {
-         this.x = x;
+        this.x = x;
         this.y = y;
         this.speed = speed;
         this.spriteWidth = 406; // placeholder value for each cell;
@@ -52,36 +93,16 @@ class Player {
         update() {
             this.x = this.speed;        
         }
-    }
+    } // Player
 
-    const player = new Player(120, 325, 1);
-    let speed = 1;
-    let enemyNotes = [];
-
-    function getRandomLetter() {
-        const alphabet = "abcdefghijklmnopqrstuvwxyz";
-        const randomIndex = Math.floor(Math.random() * alphabet.length);
-        return alphabet[randomIndex];
-    }
+    const game = new Game(CANVAS_WIDTH, CANVAS_HEIGHT);
 
     function animate() {
         ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        player.draw(ctx);
-        player.update();
-        if (gameFrame % staggerNotes === 0) {
-            let y = Math.random() * 600;
-            let letter = getRandomLetter();
-            enemyNotes.push(new EnemyNote(ctx, speed, y, letter));
-        }
-        enemyNotes.forEach(enemyNote => {
-            enemyNote.draw(ctx);
-            enemyNote.update(); 
-        });
-        
+        game.update();
+        game.draw(ctx);
         requestAnimationFrame(animate);  
-        gameFrame--;
     }
     
     animate();
-    
-});
+    });
