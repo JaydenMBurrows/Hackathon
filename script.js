@@ -30,12 +30,13 @@ class Game {
     constructor(width, height) {
         this.width = width;
         this.height = height;
-        this.byte = new Byte(10, 350, 1, 0, 403);
+        this.byte1 = new Byte(200, 300, 0, 403); //guitarist
+        this.byte2 = new Byte(335, 220, 0, 0); //drummer
+        this.byte3 = new Byte(480, 300, 812, 0); //singer
         this.input = new InputHandler(enemyNotes, enemyNoteLetters);
     }
 
     update() {
-        this.byte.update();
         if (gameFrame % staggerNotes === 0) {
             let y = Math.random() * 500;
             let letter = getRandomLetter();
@@ -50,7 +51,9 @@ class Game {
 
     draw(ctx) {
         ctx.drawImage(background, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        this.byte.draw(ctx);
+        this.byte1.draw(ctx);
+        this.byte2.draw(ctx);
+        this.byte3.draw(ctx);
         enemyNotes.forEach(enemyNote => {
             enemyNote.draw(ctx);
         });
@@ -59,16 +62,15 @@ class Game {
 }    
 
 class Byte {
-    constructor(x, y, speed, frameX, frameY) {
+    constructor(x, y, frameX, frameY) {
         this.x = x;
         this.y = y;
-        this.speed = speed;
         this.spriteWidth = 406; // placeholder value for each cell;
         this.spriteHeight = 403; // placeholder value SpriteSheet height / rows
         this.width = this.spriteWidth / 2; 
         this.height = this.spriteHeight / 2; 
         this.image = new Image();
-        this.image.src = 'sprites.png';
+        this.image.src = 'spritesNew.png';
         // this.image = new Image();
         this.frameX = frameX; // the first frame
         // *** this will be 0 later based on the frames Vini gives
@@ -89,9 +91,6 @@ class Byte {
             ctx.drawImage(this.image, this.positionX, this.frameY, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
         }
         
-        update() {
-            this.x = this.speed;        
-        }
     } // Byte
 
     class InputHandler {
@@ -102,20 +101,17 @@ class Byte {
                     this.keys.push(e.key);
                 }
             });
-    const player = new Player(120, 325, 1);
-    let speed = 1;
-    let enemyNotes = [];
-    
-            document.addEventListener('keyup', e => {
-                if (this.isAlphabet(e.key) && this.keys.indexOf(e.key) != -1) {
-                    this.keys.splice(this.keys.indexOf(e.key), 1);
-                    if (enemyNoteLetters.indexOf(e.key) != -1) {
-                        enemyNoteLetters.splice(enemyNoteLetters.indexOf(e.key), 1);
-                        enemyNotes.splice(enemyNotes.indexOf(e.key), 1);
-                    }   
-                }
-            });
-        }
+
+         document.addEventListener('keyup', e => {
+            if (this.isAlphabet(e.key) && this.keys.indexOf(e.key) != -1) {
+                this.keys.splice(this.keys.indexOf(e.key), 1);
+                if (enemyNoteLetters.indexOf(e.key) != -1) {
+                    enemyNoteLetters.splice(enemyNoteLetters.indexOf(e.key), 1);
+                    enemyNotes.splice(enemyNotes.indexOf(e.key), 1);
+                }   
+            }
+        });
+    }
     
         isAlphabet(char) {
             var alphabet = "abcdefghijklmnopqrstuvwxyz";
