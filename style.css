@@ -6,9 +6,7 @@ body {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    background: url(backgroundfog.jpg);
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-color: #441c5f;
 }
 
 .button {
@@ -19,6 +17,7 @@ body {
     text-decoration: purple wavy underline;
     display: inline-block;
     font-size: 16px;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     margin: 4px 2px;
     cursor: pointer;
 }
