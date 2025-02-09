@@ -54,6 +54,12 @@ class Player {
         }
     }
 
+
+
+
+
+    //hii  Jayden
+
     const player = new Player(120, 325, 1);
     let speed = 1;
     let enemyNotes = [];
