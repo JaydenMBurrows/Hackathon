@@ -30,12 +30,12 @@ class Game {
     constructor(width, height) {
         this.width = width;
         this.height = height;
-        this.player = new Player(10, 350, 1);
+        this.byte = new Byte(10, 350, 1, 0, 403);
         this.input = new InputHandler(enemyNotes, enemyNoteLetters);
     }
 
     update() {
-        this.player.update();
+        this.byte.update();
         if (gameFrame % staggerNotes === 0) {
             let y = Math.random() * 500;
             let letter = getRandomLetter();
@@ -50,7 +50,7 @@ class Game {
 
     draw(ctx) {
         ctx.drawImage(background, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        this.player.draw(ctx);
+        this.byte.draw(ctx);
         enemyNotes.forEach(enemyNote => {
             enemyNote.draw(ctx);
         });
@@ -58,8 +58,8 @@ class Game {
     }
 }    
 
-class Player {
-    constructor(x, y, speed) {
+class Byte {
+    constructor(x, y, speed, frameX, frameY) {
         this.x = x;
         this.y = y;
         this.speed = speed;
@@ -70,32 +70,29 @@ class Player {
         this.image = new Image();
         this.image.src = 'sprites.png';
         // this.image = new Image();
-        this.frameX = 0; // 0 or this.width;
+        this.frameX = frameX; // the first frame
         // *** this will be 0 later based on the frames Vini gives
-        this.frameY = 0;
+        this.frameY = frameY;
+        this.positionX = frameX;
     }
 
     draw(ctx) {
         if (gameFrame % staggerFrames === 0) {
             // change this to the frames that Vini gives
             // * 7 should change based on how many frames Vini gives
-            if (this.frameX < this.spriteWidth) {
-                this.frameX += this.spriteWidth;
+            if (this.positionX < this.spriteWidth + this.frameX) {
+                this.positionX += this.spriteWidth;
             } else {
-                this.frameX = 0;
+                this.positionX = this.frameX;
             }
         }
-            ctx.drawImage(this.image, this.frameX, this.frameY, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
+            ctx.drawImage(this.image, this.positionX, this.frameY, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
         }
         
         update() {
             this.x = this.speed;        
         }
-    } // Player
-
-    const player = new Player(120, 325, 1);
-    let speed = 1;
-    let enemyNotes = [];
+    } // Byte
 
     class InputHandler {
         constructor() {
@@ -105,8 +102,10 @@ class Player {
                     this.keys.push(e.key);
                 }
             });
-
-
+    const player = new Player(120, 325, 1);
+    let speed = 1;
+    let enemyNotes = [];
+    
             document.addEventListener('keyup', e => {
                 if (this.isAlphabet(e.key) && this.keys.indexOf(e.key) != -1) {
                     this.keys.splice(this.keys.indexOf(e.key), 1);
