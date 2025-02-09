@@ -10,6 +10,9 @@ let animationId;
 const staggerFrames = 10;
 let staggerNotes = 200;
 
+let background = new Image(CANVAS_WIDTH, CANVAS_HEIGHT);
+background.src = 'bg1.png';
+ctx.drawImage(background, 0, 0);
 
 window.addEventListener('load', function() {
 
