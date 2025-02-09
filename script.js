@@ -93,6 +93,10 @@ class Player {
         }
     } // Player
 
+    const player = new Player(120, 325, 1);
+    let speed = 1;
+    let enemyNotes = [];
+
     class InputHandler {
         constructor() {
             this.keys = [];
@@ -101,6 +105,7 @@ class Player {
                     this.keys.push(e.key);
                 }
             });
+
 
             document.addEventListener('keyup', e => {
                 if (this.isAlphabet(e.key) && this.keys.indexOf(e.key) != -1) {
