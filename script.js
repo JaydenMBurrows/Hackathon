@@ -3,10 +3,9 @@ const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
 const CANVAS_WIDTH = canvas.width = 1350;
 const CANVAS_HEIGHT = canvas.height = 650;
-let gameSpeed = 15;
 let gameFrame = 0;
-let animationId;
 let score = 0;
+let gameStatus = true;
 
 const staggerFrames = 10;
 let staggerNotes = 200;
@@ -45,6 +44,9 @@ class Game {
         }
         enemyNotes.forEach(enemyNote => {
             enemyNote.update(); 
+            if (enemyNote.x < 856) { // 886+10
+                gameStatus = false;
+            }
         });
         gameFrame++;
     }
@@ -103,7 +105,7 @@ class Byte {
             });
 
          document.addEventListener('keyup', e => {
-            if (this.isAlphabet(e.key) && this.keys.indexOf(e.key) != -1) {
+            if (this.isAlphabet(e.key)) {
                 this.keys.splice(this.keys.indexOf(e.key), 1);
                 if (enemyNoteLetters.indexOf(e.key) != -1) {
                     enemyNoteLetters.splice(enemyNoteLetters.indexOf(e.key), 1);
@@ -125,13 +127,23 @@ class Byte {
     } // inputHandler
 
     const game = new Game(CANVAS_WIDTH, CANVAS_HEIGHT);
-
+    var anim;
+    var timer;
     function animate() {
         ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         game.update();
         game.draw(ctx);
-        animationId = requestAnimationFrame(animate);  
+        if (gameStatus){
+            requestAnimationFrame(animate);
+        } else {
+            drawGameOver();
+        }
+    }
+
+    function drawGameOver() {
+        ctx.fillStyle = 'white';
+        ctx.fillText('GAME OVER, you lost! :(', CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
     }
 
     animate();
-    });
+});

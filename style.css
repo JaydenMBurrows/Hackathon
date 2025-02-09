@@ -21,14 +21,6 @@ body {
     cursor: pointer;
 }
 
-#overlay {
-    position: absolute;
-    margin: 0;
-    width: 105vw;
-    height: 105vh;
-    opacity: 0.4;
-}
-
 #canvas1 { 
     margin: 0;
     border: 3px solid black;
