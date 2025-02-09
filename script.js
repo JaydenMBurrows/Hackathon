@@ -6,13 +6,13 @@ const CANVAS_HEIGHT = canvas.height = 650;
 let gameSpeed = 15;
 let gameFrame = 0;
 let animationId;
+let score = 0;
 
 const staggerFrames = 10;
 let staggerNotes = 200;
 
-let background = new Image(CANVAS_WIDTH, CANVAS_HEIGHT);
+let background = new Image();
 background.src = 'bg1.png';
-ctx.drawImage(background, 0, 0);
 
 window.addEventListener('load', function() {
 
@@ -49,10 +49,12 @@ class Game {
     }
 
     draw(ctx) {
+        ctx.drawImage(background, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         this.player.draw(ctx);
         enemyNotes.forEach(enemyNote => {
             enemyNote.draw(ctx);
         });
+        
     }
 }    
 
