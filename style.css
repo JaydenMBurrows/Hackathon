@@ -24,7 +24,7 @@ body {
 }
 
 
-#canvas1 {
+#canvas1 { 
     margin: 20px;
     border: 3px solid black;
     width: 1350px; /* placeholder value for now */

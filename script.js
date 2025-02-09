@@ -5,23 +5,57 @@ const CANVAS_WIDTH = canvas.width = 1350;
 const CANVAS_HEIGHT = canvas.height = 650;
 let gameSpeed = 15;
 let gameFrame = 0;
-
-const backgroundLayer1 = new Image();
-backgroundLayer1.src = 'sky.png';
-const backgroundLayer2 = new Image();
-backgroundLayer2.src = 'background.png';
-const backgroundLayer3 = new Image();
-backgroundLayer3.src = 'foreground.png';
+let animationId;
 
 const staggerFrames = 10;
 let staggerNotes = 200;
 
 
 window.addEventListener('load', function() {
-    
+
+let speed = 1; // should increase as game goes on
+let enemyNotes = [];
+let enemyNoteLetters = []; // keeps track of the letters of each corresponding note
+
+function getRandomLetter() {
+    const alphabet = "abcdefghijklmnopqrstuvwxyz";
+    const randomIndex = Math.floor(Math.random() * alphabet.length);
+    return alphabet[randomIndex];
+}
+
+class Game {
+    constructor(width, height) {
+        this.width = width;
+        this.height = height;
+        this.player = new Player(10, 350, 1);
+        this.input = new InputHandler(enemyNotes, enemyNoteLetters);
+    }
+
+    update() {
+        this.player.update();
+        if (gameFrame % staggerNotes === 0) {
+            let y = Math.random() * 500;
+            let letter = getRandomLetter();
+            enemyNotes.push(new EnemyNote(ctx, speed, y, letter));
+            enemyNoteLetters.push(letter);
+        }
+        enemyNotes.forEach(enemyNote => {
+            enemyNote.update(); 
+        });
+        gameFrame++;
+    }
+
+    draw(ctx) {
+        this.player.draw(ctx);
+        enemyNotes.forEach(enemyNote => {
+            enemyNote.draw(ctx);
+        });
+    }
+}    
+
 class Player {
     constructor(x, y, speed) {
-         this.x = x;
+        this.x = x;
         this.y = y;
         this.speed = speed;
         this.spriteWidth = 406; // placeholder value for each cell;
@@ -52,36 +86,47 @@ class Player {
         update() {
             this.x = this.speed;        
         }
-    }
+    } // Player
 
-    const player = new Player(120, 325, 1);
-    let speed = 1;
-    let enemyNotes = [];
+    class InputHandler {
+        constructor() {
+            this.keys = [];
+            document.addEventListener('keydown', e => {
+                if (this.isAlphabet(e.key)) {
+                    this.keys.push(e.key);
+                }
+            });
 
-    function getRandomLetter() {
-        const alphabet = "abcdefghijklmnopqrstuvwxyz";
-        const randomIndex = Math.floor(Math.random() * alphabet.length);
-        return alphabet[randomIndex];
-    }
+            document.addEventListener('keyup', e => {
+                if (this.isAlphabet(e.key) && this.keys.indexOf(e.key) != -1) {
+                    this.keys.splice(this.keys.indexOf(e.key), 1);
+                    if (enemyNoteLetters.indexOf(e.key) != -1) {
+                        enemyNoteLetters.splice(enemyNoteLetters.indexOf(e.key), 1);
+                        enemyNotes.splice(enemyNotes.indexOf(e.key), 1);
+                    }   
+                }
+            });
+        }
+    
+        isAlphabet(char) {
+            var alphabet = "abcdefghijklmnopqrstuvwxyz";
+            for (let i = 0; i < alphabet.length; i++) {
+                if (char === alphabet.charAt(i)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    } // inputHandler
+
+    const game = new Game(CANVAS_WIDTH, CANVAS_HEIGHT);
 
     function animate() {
         ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        player.draw(ctx);
-        player.update();
-        if (gameFrame % staggerNotes === 0) {
-            let y = Math.random() * 600;
-            let letter = getRandomLetter();
-            enemyNotes.push(new EnemyNote(ctx, speed, y, letter));
-        }
-        enemyNotes.forEach(enemyNote => {
-            enemyNote.draw(ctx);
-            enemyNote.update(); 
-        });
-        
-        requestAnimationFrame(animate);  
-        gameFrame--;
+        game.update();
+        game.draw(ctx);
+        animationId = requestAnimationFrame(animate);  
     }
-    
+
     animate();
-    
-});
+    });
